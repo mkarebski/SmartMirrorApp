@@ -9,8 +9,34 @@
     android:weightSum="1"
     android:windowActionBar="false"
     tools:context="pl.mkarebski.smartmirrorapp.MainActivity"
-    android:background="#000000">
+    android:background="#000000"
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="233dp"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical"
+        android:weightSum="1"
+        tools:context="pl.mkarebski.smartmirrorapp.MainActivity"
+        android:layout_weight="1.04">
+
+        <TextClock
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textClock"
+            android:textSize="60sp"
+            android:format12Hour="\@null"
+            android:timeZone="GMT+0100"
+            android:format24Hour="dd MMM yyyy \nk:mm"
+            android:textColor="#ffffff"
+            android:layout_gravity="right|center_horizontal"
+            android:layout_marginTop="8dp" />
+
+    </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -23,59 +49,27 @@
         tools:context="pl.mkarebski.smartmirrorapp.MainActivity">
 
         <TextView
-            android:id="@+id/temp"
+            android:id="@+id/temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="16 \u2103"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="100dp"
             android:paddingTop="10dp"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="-15dp"
+            android:text="50 ℃" />
 
         <ImageView
             android:id="@+id/weatherIcon"
             android:layout_width="117dp"
             android:layout_height="117dp"
-            android:layout_gravity="center_vertical"
-            android:src="@mipmap/sunny"
+            android:layout_gravity="center_vertical|right"
+            android:src="@drawable/clear_day"
             android:background="#00ffffff"
-            android:adjustViewBounds="false" />
+            android:adjustViewBounds="false"
+            android:layout_marginRight="15dp" />
 
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:orientation="vertical"
-        android:weightSum="1"
-        tools:context="pl.mkarebski.smartmirrorapp.MainActivity">
-
-        <TextView
-            android:id="@+id/hour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:gravity="end"
-            android:padding="-10dp"
-            android:password="false"
-            android:phoneNumber="false"
-            android:text="07:00"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="130dp"
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="7 Nov 16"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textSize="70dp"
-            android:textColor="#FFFFFF" />
     </LinearLayout>
 
 </LinearLayout>

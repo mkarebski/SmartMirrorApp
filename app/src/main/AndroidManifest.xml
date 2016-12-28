@@ -3,7 +3,6 @@
     package="pl.mkarebski.smartmirrorapp">
 
     <application
-        android:name=".SmartMirrorApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,6 +18,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".ForecastDownloader"></receiver>
+
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
