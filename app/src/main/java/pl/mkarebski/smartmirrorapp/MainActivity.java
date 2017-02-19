@@ -3,11 +3,14 @@ package pl.mkarebski.smartmirrorapp;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,22 +20,26 @@ import android.widget.TextView;
 import java.util.Calendar;
 
 import static android.app.AlarmManager.INTERVAL_HALF_HOUR;
-import static java.util.Calendar.*;
+import static android.provider.Settings.System.SCREEN_BRIGHTNESS;
+import static android.view.WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL;
+import static java.util.Calendar.getInstance;
 
 public class MainActivity extends Activity {
 
     public static final String MyPREFERENCES = "MyPrefs";
+    public static final int FULL_BRIGHTNESS = 255;
     private TextView temperature;
     private ImageView weatherIcon;
     private OnSharedPreferenceChangeListener onSharedPreferenceChangeListener;
+    private PowerManager.WakeLock wakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setFullBrightness();
+        keepScreenOn();
+        hideTitleBar();
 
         setContentView(R.layout.activity_main);
 
@@ -57,7 +64,33 @@ public class MainActivity extends Activity {
                 weatherIcon.setImageResource(getResourceFrom(icon));
             }
         };
+
         sharedpreferences.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener);
+
+        Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+    }
+
+    private void hideTitleBar() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
+    private void setFullBrightness() {
+        ContentResolver cResolver = getContentResolver();
+        Window window = getWindow();
+
+        Settings.System.putInt(cResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+
+        Settings.System.putInt(cResolver, SCREEN_BRIGHTNESS, FULL_BRIGHTNESS);
+        WindowManager.LayoutParams layoutpars = window.getAttributes();
+
+        layoutpars.screenBrightness = BRIGHTNESS_OVERRIDE_FULL;
+        window.setAttributes(layoutpars);
+    }
+
+    private void keepScreenOn() {
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "Forecast");
     }
 
     private void clearOldSharedPreferences(SharedPreferences sharedpreferences) {
@@ -135,5 +168,17 @@ public class MainActivity extends Activity {
         PendingIntent pendingIntent = initPendingIntentWithRequestCodeEqualTo(1);
 
         manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTime().getTime() + 5000, INTERVAL_HALF_HOUR, pendingIntent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        wakeLock.acquire();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        wakeLock.release();
     }
 }
