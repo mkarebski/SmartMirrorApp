@@ -30,7 +30,7 @@
             android:id="@+id/textClock"
             android:textSize="60sp"
             android:format12Hour="\@null"
-            android:timeZone="GMT+0100"
+            android:timeZone="Europe/Warsaw"
             android:format24Hour="dd MMM yyyy \nk:mm"
             android:textColor="#ffffff"
             android:layout_gravity="right|center_horizontal"
